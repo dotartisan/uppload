@@ -1,0 +1,19 @@
+/*!
+ * Cropper.js v1.5.12
+ * https://fengyuanchen.github.io/cropperjs
+ *
+ * Copyright 2015-present Chen Fengyuan
+ * Released under the MIT license
+ *
+ * Date: 2021-06-12T08:00:17.411Z
+ */
+
+/*!
+* focus-trap 6.9.0
+* @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
+*/
+
+/*!
+* tabbable 5.3.1
+* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
+*/

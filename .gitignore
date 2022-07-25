@@ -62,7 +62,6 @@ typings/
 .env
 
 # Built files
-dist/
 public/
 
 # Built webpack config
