@@ -13,6 +13,7 @@ export interface GIPHYResult {
     display_name: string;
     profile_url: string;
   };
+  username?: string;
 }
 
 export default class GIPHY extends SearchBaseClass<GIPHYResult> {
@@ -30,8 +31,19 @@ export default class GIPHY extends SearchBaseClass<GIPHYResult> {
         `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(
           query
         )}&limit=18&offset=0&rating=G&lang=en`,
+      metadata: (image: GIPHYResult) => {
+        console.log(image)
+        const meta = {
+          caption: image.title,
+          alt: image.title,
+          author: image.user?.display_name || image.username,
+          link: image.user?.profile_url || this.poweredByUrl,
+        }
+
+        return encodeURIComponent(JSON.stringify(meta))
+      },
       getButton: (image: GIPHYResult) => `<div class="result">
-        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`,
+        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" data-metadata="${this.metadata(image)}" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`,
       getSearchResults: (response: { data: GIPHYResult[] }) => response.data,
       getPopularResults: (response: { data: GIPHYResult[] }) => response.data,
     });

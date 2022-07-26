@@ -35,5 +35,5 @@ test("gets popular items", () =>
 
 test("gets button HTML", () =>
   expect(minifyHTML(service.getButton(pixabayResult))).toBe(
-    `<div class="result"><button aria-label="photo, example" data-full-url="https://pixabay.com/large.jpg" style="background-image: url('https://pixabay.com/preview.jpg')"></button><small class="author"><img alt="" src="https://pixabay.com/user.jpg"><span>Anand Chowdhary</span></small></div>`
+    `<div class="result"><button aria-label="photo, example" data-full-url="https://pixabay.com/large.jpg" data-metadata="%7B%22caption%22%3A%22photo%2C%20example%22%2C%22alt%22%3A%22photo%2C%20example%22%2C%22author%22%3A%22Anand%20Chowdhary%22%2C%22link%22%3A%22https%3A%2F%2Fpixabay.com%2Ffile%22%7D" style="background-image: url('https://pixabay.com/preview.jpg')"></button><small class="author"><img alt="" src="https://pixabay.com/user.jpg"><span>Anand Chowdhary</span></small></div>`
   ));

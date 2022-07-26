@@ -4,16 +4,17 @@ import { safeListen } from "../helpers/elements";
 import { colorSVG } from "./assets";
 import { blobToUpploadFile } from "./files";
 let params = undefined;
-const generateFileName = (file, service, type, query) => {
+const generateFileName = (file, service, type, query, metadata) => {
     const ext = (type === null || type === void 0 ? void 0 : type.indexOf('image/gif')) == 0 ? 'gif' : 'jpg';
     file.name = `${query || `${service}-import`}-${Math.random()
         .toString(36)
         .slice(2)}.${ext}`;
     file.type = type ? type : "image/jpeg";
+    file.metadata = metadata;
     return file;
 };
 export class SearchBaseClass extends UpploadService {
-    constructor({ apiKey, name, icon, color, poweredByUrl, popularEndpoint, searchEndpoint, getButton, getPopularResults, getSearchResults, noRecolor, fetchSettings, }) {
+    constructor({ apiKey, name, icon, color, poweredByUrl, popularEndpoint, searchEndpoint, getButton, metadata, getPopularResults, getSearchResults, noRecolor, fetchSettings, }) {
         super();
         this.results = [];
         this.loading = false;
@@ -59,10 +60,12 @@ export class SearchBaseClass extends UpploadService {
             imageButtons.forEach((image) => {
                 safeListen(image, "click", () => {
                     const url = image.getAttribute("data-full-url");
+                    const meta = image.getAttribute("data-metadata");
+                    const metadata = meta ? JSON.parse(decodeURIComponent(meta)) : {};
                     this.loading = true;
                     this.update(params);
                     if (url) {
-                        imageUrlToBlob(url).then((blob) => params.next(generateFileName(blobToUpploadFile(blob), this.name, blob.type, image.getAttribute("aria-label"))))
+                        imageUrlToBlob(url).then((blob) => params.next(generateFileName(blobToUpploadFile(blob), this.name, blob.type, image.getAttribute("aria-label"), metadata)))
                             .catch((error) => params.handle("errors.response_not_ok"))
                             .then(() => (this.loading = false));
                     }
@@ -81,6 +84,7 @@ export class SearchBaseClass extends UpploadService {
         this.popularEndpoint = popularEndpoint(this.apiKey);
         this.searchEndpoint = searchEndpoint;
         this.getButton = getButton;
+        this.metadata = metadata;
         this.getPopularResults = getPopularResults;
         this.getSearchResults = getSearchResults;
         if (fetchSettings)

@@ -7,10 +7,19 @@ export default class Unsplash extends SearchBaseClass {
             icon: `<svg aria-hidden="true" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M81 113v72h94v-72h81v143H0V113h81zM175 0v71H81V0h94z" fill="#000" fill-rule="evenodd"/></svg>`,
             color: "#333",
             poweredByUrl: "https://unsplash.com",
+            metadata: (image) => {
+                const meta = {
+                    caption: image.alt_description || image.description,
+                    alt: image.alt_description || image.description,
+                    author: image.user.name,
+                    link: image.user.links.html,
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             popularEndpoint: (apiKey) => `https://api.unsplash.com/photos?client_id=${apiKey}`,
             searchEndpoint: (apiKey, query) => `https://api.unsplash.com/search/photos?client_id=${this.apiKey}&page=1&query=${encodeURIComponent(query)}`,
             getButton: (image) => `<div class="result">
-        <button aria-label="${image.alt_description || image.description}" data-full-url="${image.urls.regular}" style="background-image: url('${image.urls.thumb}')"></button>
+        <button aria-label="${image.alt_description || image.description}" data-full-url="${image.urls.regular}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.urls.thumb}')"></button>
         <small class="author">
           <img alt="" src="${image.user.profile_image.small}">
           <span>${image.user.name}</span>

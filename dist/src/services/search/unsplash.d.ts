@@ -9,6 +9,9 @@ export interface UnsplashResult {
     };
     user: {
         name: string;
+        links: {
+            html: string;
+        };
         profile_image: {
             small: string;
         };

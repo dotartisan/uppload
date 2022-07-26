@@ -7,12 +7,13 @@ export declare class SearchBaseClass<ImageResult = any> extends UpploadService {
     poweredByUrl: string;
     popularEndpoint: string;
     searchEndpoint: (apiKey: string, query: string) => string;
+    metadata: (image: ImageResult) => string;
     getButton: (image: ImageResult) => string;
     getPopularResults: (response: any) => ImageResult[];
     getSearchResults: (response: any) => ImageResult[];
     noRecolor: boolean;
     fetchSettings?: RequestInit;
-    constructor({ apiKey, name, icon, color, poweredByUrl, popularEndpoint, searchEndpoint, getButton, getPopularResults, getSearchResults, noRecolor, fetchSettings, }: {
+    constructor({ apiKey, name, icon, color, poweredByUrl, popularEndpoint, searchEndpoint, getButton, metadata, getPopularResults, getSearchResults, noRecolor, fetchSettings, }: {
         name: string;
         icon: string;
         color: string;
@@ -20,6 +21,7 @@ export declare class SearchBaseClass<ImageResult = any> extends UpploadService {
         poweredByUrl: string;
         popularEndpoint: (apiKey: string) => string;
         searchEndpoint: (apiKey: string, query: string) => string;
+        metadata: (image: ImageResult) => string;
         getButton: (image: ImageResult) => string;
         getPopularResults: (response: any) => ImageResult[];
         getSearchResults: (response: any) => ImageResult[];

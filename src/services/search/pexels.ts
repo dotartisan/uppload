@@ -2,7 +2,9 @@ import { SearchBaseClass } from "../../helpers/search";
 
 export interface PexelsResult {
   url: string;
+  alt: string,
   photographer: string;
+  photographer_url: string;
   src: {
     original: string;
     large2x: string;
@@ -24,12 +26,20 @@ export default class Pexels extends SearchBaseClass<PexelsResult> {
         `https://api.pexels.com/v1/search?query=${encodeURIComponent(
           query
         )}&per_page=12&page=1`,
+      metadata: (image: PexelsResult) => {
+        const meta = {
+          caption: image.alt,
+          alt: image.alt,
+          author: image.photographer,
+          link: image.url,
+        }
+
+        return encodeURIComponent(JSON.stringify(meta))
+      },
       getButton: (image: PexelsResult) => `<div class="result">
-        <button aria-label="${image.photographer || ""}" data-full-url="${
-        image.src.large2x
-      }" style="background-image: url('${
-        image.src.tiny
-      }')"></button><small class="author">
+        <button aria-label="${image.photographer || ""}" data-full-url="${image.src.large2x
+        }" data-metadata="${this.metadata(image)}" style="background-image: url('${image.src.tiny
+        }')"></button><small class="author">
         <span>${image.photographer}</span>
       </small></div>`,
       getSearchResults: (response: { photos: PexelsResult[] }) =>

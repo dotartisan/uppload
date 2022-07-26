@@ -17,6 +17,9 @@ const exampleClass = new SearchBaseClass<IExampleImage>({
   icon: "",
   poweredByUrl: "https://example.com",
   popularEndpoint: (apiKey: string) => `https://example.com?key=${apiKey}`,
+  metadata: () => {
+    return '';
+  },
   searchEndpoint: (apiKey: string, q: string) =>
     `https://example.com/search?key=${apiKey}&q=${q}`,
   getButton: (button: IExampleImage) => `<button>${button.name}</button>`,

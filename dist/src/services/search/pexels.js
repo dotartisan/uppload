@@ -9,8 +9,17 @@ export default class Pexels extends SearchBaseClass {
             poweredByUrl: "https://pexels.com",
             popularEndpoint: (apiKey) => `https://api.pexels.com/v1/curated?per_page=9&page=1`,
             searchEndpoint: (apiKey, query) => `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&page=1`,
+            metadata: (image) => {
+                const meta = {
+                    caption: image.alt,
+                    alt: image.alt,
+                    author: image.photographer,
+                    link: image.url,
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image) => `<div class="result">
-        <button aria-label="${image.photographer || ""}" data-full-url="${image.src.large2x}" style="background-image: url('${image.src.tiny}')"></button><small class="author">
+        <button aria-label="${image.photographer || ""}" data-full-url="${image.src.large2x}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.src.tiny}')"></button><small class="author">
         <span>${image.photographer}</span>
       </small></div>`,
             getSearchResults: (response) => response.photos,

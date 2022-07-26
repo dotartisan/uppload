@@ -16,6 +16,7 @@ const giphyResult: GIPHYResult = {
     display_name: "Anand Chowdhary",
     profile_url: "https://giphy.com/anand",
   },
+  username: "Anand Chowdhary",
 };
 
 test("popular endpoint", () =>
@@ -40,5 +41,5 @@ test("gets popular items", () =>
 
 test("gets button HTML", () =>
   expect(minifyHTML(service.getButton(giphyResult))).toBe(
-    `<div class="result"><button aria-label="An image" data-full-url="https://giphy.com/large.gif&uppload-output=gif" style="background-image: url('https://giphy.com/preview.gif')"></button></div>`
+    `<div class="result"><button aria-label="An image" data-full-url="https://giphy.com/large.gif&uppload-output=gif" data-metadata="%7B%22caption%22%3A%22An%20image%22%2C%22alt%22%3A%22An%20image%22%2C%22author%22%3A%22Anand%20Chowdhary%22%2C%22link%22%3A%22https%3A%2F%2Fgiphy.com%2Fanand%22%7D" style="background-image: url('https://giphy.com/preview.gif')"></button></div>`
   ));

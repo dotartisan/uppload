@@ -15,13 +15,15 @@ const generateFileName = (
   file: IUpploadFile,
   service: string,
   type?: string,
-  query?: string | null
+  query?: string | null,
+  metadata?: Object | null,
 ) => {
   const ext = type?.indexOf('image/gif') == 0 ? 'gif' : 'jpg'
   file.name = `${query || `${service}-import`}-${Math.random()
     .toString(36)
     .slice(2)}.${ext}`;
   file.type = type ? type : "image/jpeg";
+  file.metadata = metadata;
   return file;
 };
 
@@ -32,6 +34,7 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
   poweredByUrl: string;
   popularEndpoint: string;
   searchEndpoint: (apiKey: string, query: string) => string;
+  metadata: (image: ImageResult) => string;
   getButton: (image: ImageResult) => string;
   getPopularResults: (response: any) => ImageResult[];
   getSearchResults: (response: any) => ImageResult[];
@@ -47,6 +50,7 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
     popularEndpoint,
     searchEndpoint,
     getButton,
+    metadata,
     getPopularResults,
     getSearchResults,
     noRecolor,
@@ -59,6 +63,7 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
     poweredByUrl: string;
     popularEndpoint: (apiKey: string) => string;
     searchEndpoint: (apiKey: string, query: string) => string;
+    metadata: (image: ImageResult) => string;
     getButton: (image: ImageResult) => string;
     getPopularResults: (response: any) => ImageResult[];
     getSearchResults: (response: any) => ImageResult[];
@@ -75,6 +80,7 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
     this.popularEndpoint = popularEndpoint(this.apiKey);
     this.searchEndpoint = searchEndpoint;
     this.getButton = getButton;
+    this.metadata = metadata;
     this.getPopularResults = getPopularResults;
     this.getSearchResults = getSearchResults;
     if (fetchSettings) this.fetchSettings = fetchSettings(this.apiKey);
@@ -176,6 +182,8 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
     imageButtons.forEach((image) => {
       safeListen(image, "click", () => {
         const url = image.getAttribute("data-full-url");
+        const meta = image.getAttribute("data-metadata")
+        const metadata = meta ? JSON.parse(decodeURIComponent(meta)) : {};
         this.loading = true;
         this.update(params);
         if (url) {
@@ -185,7 +193,8 @@ export class SearchBaseClass<ImageResult = any> extends UpploadService {
                 blobToUpploadFile(blob),
                 this.name,
                 blob.type,
-                image.getAttribute("aria-label")
+                image.getAttribute("aria-label"),
+                metadata
               )
             )
           )

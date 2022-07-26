@@ -11,6 +11,9 @@ const exampleClass = new SearchBaseClass({
     icon: "",
     poweredByUrl: "https://example.com",
     popularEndpoint: (apiKey) => `https://example.com?key=${apiKey}`,
+    metadata: () => {
+        return '';
+    },
     searchEndpoint: (apiKey, q) => `https://example.com/search?key=${apiKey}&q=${q}`,
     getButton: (button) => `<button>${button.name}</button>`,
     getPopularResults: (response) => response,

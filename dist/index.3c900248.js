@@ -1566,8 +1566,18 @@ class GIPHY extends _search.SearchBaseClass {
             ,
             searchEndpoint: (apiKey, query)=>`https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=18&offset=0&rating=G&lang=en`
             ,
+            metadata: (image)=>{
+                console.log(image);
+                const meta = {
+                    caption: image.title,
+                    alt: image.title,
+                    author: image.user?.display_name || image.username,
+                    link: image.user?.profile_url || this.poweredByUrl
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image)=>`<div class="result">
-        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`
+        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" data-metadata="${this.metadata(image)}" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`
             ,
             getSearchResults: (response)=>response.data
             ,
@@ -1588,17 +1598,18 @@ var _elements = require("../helpers/elements");
 var _assets = require("./assets");
 var _files = require("./files");
 let params = undefined;
-const generateFileName = (file, service, type, query)=>{
+const generateFileName = (file, service, type, query, metadata)=>{
     const ext = type?.indexOf('image/gif') == 0 ? 'gif' : 'jpg';
     file.name = `${query || `${service}-import`}-${Math.random().toString(36).slice(2)}.${ext}`;
     file.type = type ? type : "image/jpeg";
+    file.metadata = metadata;
     return file;
 };
 class SearchBaseClass extends _service.UpploadService {
     results = [];
     loading = false;
     noRecolor = false;
-    constructor({ apiKey , name , icon , color , poweredByUrl , popularEndpoint , searchEndpoint , getButton , getPopularResults , getSearchResults , noRecolor , fetchSettings  }){
+    constructor({ apiKey , name , icon , color , poweredByUrl , popularEndpoint , searchEndpoint , getButton , metadata , getPopularResults , getSearchResults , noRecolor , fetchSettings  }){
         super();
         this.name = name;
         this.icon = icon;
@@ -1609,6 +1620,7 @@ class SearchBaseClass extends _service.UpploadService {
         this.popularEndpoint = popularEndpoint(this.apiKey);
         this.searchEndpoint = searchEndpoint;
         this.getButton = getButton;
+        this.metadata = metadata;
         this.getPopularResults = getPopularResults;
         this.getSearchResults = getSearchResults;
         if (fetchSettings) this.fetchSettings = fetchSettings(this.apiKey);
@@ -1668,9 +1680,11 @@ class SearchBaseClass extends _service.UpploadService {
         imageButtons.forEach((image)=>{
             _elements.safeListen(image, "click", ()=>{
                 const url = image.getAttribute("data-full-url");
+                const meta = image.getAttribute("data-metadata");
+                const metadata = meta ? JSON.parse(decodeURIComponent(meta)) : {};
                 this.loading = true;
                 this.update(params3);
-                if (url) _http.imageUrlToBlob(url).then((blob)=>params3.next(generateFileName(_files.blobToUpploadFile(blob), this.name, blob.type, image.getAttribute("aria-label")))
+                if (url) _http.imageUrlToBlob(url).then((blob)=>params3.next(generateFileName(_files.blobToUpploadFile(blob), this.name, blob.type, image.getAttribute("aria-label"), metadata))
                 ).catch((error)=>params3.handle("errors.response_not_ok")
                 ).then(()=>this.loading = false
                 );
@@ -1698,8 +1712,17 @@ class Pixabay extends _search.SearchBaseClass {
             ,
             searchEndpoint: (apiKey, query)=>`https://pixabay.com/api/?key=${apiKey}&per_page=18&q=${encodeURIComponent(query)}&image_type=photo`
             ,
+            metadata: (image)=>{
+                const meta = {
+                    caption: image.tags,
+                    alt: image.tags,
+                    author: image.user,
+                    link: image.pageURL
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image)=>`<div class="result">
-        <button aria-label="${image.tags}" data-full-url="${image.largeImageURL}" style="background-image: url('${image.previewURL}')"></button><small class="author">
+        <button aria-label="${image.tags}" data-full-url="${image.largeImageURL}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.previewURL}')"></button><small class="author">
         <img alt="" src="${image.userImageURL}">
         <span>${image.user}</span>
       </small></div>`
@@ -1724,12 +1747,21 @@ class Unsplash extends _search.SearchBaseClass {
             icon: `<svg aria-hidden="true" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path d="M81 113v72h94v-72h81v143H0V113h81zM175 0v71H81V0h94z" fill="#000" fill-rule="evenodd"/></svg>`,
             color: "#333",
             poweredByUrl: "https://unsplash.com",
+            metadata: (image)=>{
+                const meta = {
+                    caption: image.alt_description || image.description,
+                    alt: image.alt_description || image.description,
+                    author: image.user.name,
+                    link: image.user.links.html
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             popularEndpoint: (apiKey)=>`https://api.unsplash.com/photos?client_id=${apiKey}`
             ,
             searchEndpoint: (apiKey, query)=>`https://api.unsplash.com/search/photos?client_id=${this.apiKey}&page=1&query=${encodeURIComponent(query)}`
             ,
             getButton: (image)=>`<div class="result">
-        <button aria-label="${image.alt_description || image.description}" data-full-url="${image.urls.regular}" style="background-image: url('${image.urls.thumb}')"></button>
+        <button aria-label="${image.alt_description || image.description}" data-full-url="${image.urls.regular}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.urls.thumb}')"></button>
         <small class="author">
           <img alt="" src="${image.user.profile_image.small}">
           <span>${image.user.name}</span>
@@ -1760,8 +1792,17 @@ class Pexels extends _search.SearchBaseClass {
             ,
             searchEndpoint: (apiKey, query)=>`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&page=1`
             ,
+            metadata: (image)=>{
+                const meta = {
+                    caption: image.alt,
+                    alt: image.alt,
+                    author: image.photographer,
+                    link: image.url
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image)=>`<div class="result">
-        <button aria-label="${image.photographer || ""}" data-full-url="${image.src.large2x}" style="background-image: url('${image.src.tiny}')"></button><small class="author">
+        <button aria-label="${image.photographer || ""}" data-full-url="${image.src.large2x}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.src.tiny}')"></button><small class="author">
         <span>${image.photographer}</span>
       </small></div>`
             ,

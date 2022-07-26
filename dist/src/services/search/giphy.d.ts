@@ -16,6 +16,7 @@ export interface GIPHYResult {
         display_name: string;
         profile_url: string;
     };
+    username?: string;
 }
 export default class GIPHY extends SearchBaseClass<GIPHYResult> {
     constructor(apiKey: string);

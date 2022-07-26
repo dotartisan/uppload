@@ -77,6 +77,7 @@ export interface IUpploadFile {
   type?: string;
   size?: number;
   lastModified?: Date;
+  metadata?: Object | null;
 }
 
 export type IUpploadPlugins =

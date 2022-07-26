@@ -10,8 +10,19 @@ export default class GIPHY extends SearchBaseClass {
             poweredByUrl: "https://giphy.com",
             popularEndpoint: (apiKey) => `https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=18&rating=G`,
             searchEndpoint: (apiKey, query) => `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=18&offset=0&rating=G&lang=en`,
+            metadata: (image) => {
+                var _a, _b;
+                console.log(image);
+                const meta = {
+                    caption: image.title,
+                    alt: image.title,
+                    author: ((_a = image.user) === null || _a === void 0 ? void 0 : _a.display_name) || image.username,
+                    link: ((_b = image.user) === null || _b === void 0 ? void 0 : _b.profile_url) || this.poweredByUrl,
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image) => `<div class="result">
-        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`,
+        <button aria-label="${image.title}" data-full-url="${image.images.downsized_large.url}&uppload-output=gif" data-metadata="${this.metadata(image)}" style="background-image: url('${image.images.preview_gif.url}')"></button></div>`,
             getSearchResults: (response) => response.data,
             getPopularResults: (response) => response.data,
         });

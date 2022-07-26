@@ -61,6 +61,7 @@ export interface IUpploadFile {
     type?: string;
     size?: number;
     lastModified?: Date;
+    metadata?: Object | null;
 }
 export declare type IUpploadPlugins = UpploadService[] | UpploadEffect[] | (UpploadService | UpploadEffect)[];
 export declare type IPluginUpdateFunction = (plugins: IUpploadPlugins) => IUpploadPlugins;

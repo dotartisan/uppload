@@ -9,8 +9,17 @@ export default class Pixabay extends SearchBaseClass {
             poweredByUrl: "https://pixabay.com",
             popularEndpoint: (apiKey) => `https://pixabay.com/api/?key=${apiKey}&per_page=18&image_type=photo`,
             searchEndpoint: (apiKey, query) => `https://pixabay.com/api/?key=${apiKey}&per_page=18&q=${encodeURIComponent(query)}&image_type=photo`,
+            metadata: (image) => {
+                const meta = {
+                    caption: image.tags,
+                    alt: image.tags,
+                    author: image.user,
+                    link: image.pageURL,
+                };
+                return encodeURIComponent(JSON.stringify(meta));
+            },
             getButton: (image) => `<div class="result">
-        <button aria-label="${image.tags}" data-full-url="${image.largeImageURL}" style="background-image: url('${image.previewURL}')"></button><small class="author">
+        <button aria-label="${image.tags}" data-full-url="${image.largeImageURL}" data-metadata="${this.metadata(image)}" style="background-image: url('${image.previewURL}')"></button><small class="author">
         <img alt="" src="${image.userImageURL}">
         <span>${image.user}</span>
       </small></div>`,
