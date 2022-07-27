@@ -33,8 +33,8 @@ export interface IUpploadSettings {
     disableModalClickClose?: boolean;
 }
 export interface IHandlersParams {
-    upload: (file: Blob) => Promise<string>;
-    uploadMultiple: (file: Blob[]) => Promise<string>;
+    upload: (file: Blob, metadata: any) => Promise<string>;
+    uploadMultiple: (file: Blob[], metadata: any) => Promise<string>;
     next: (file: IUpploadFile) => void;
     showHelp: (url: string) => void;
     handle: (error: any) => void;
@@ -49,8 +49,8 @@ export interface IServiceTemplateParams {
     uppload: Uppload;
     translate: ITranslator;
 }
-export declare type IUploader = (file: Blob, updateProgress?: (progress: number) => void) => Promise<string>;
-export declare type IMultipleUploader = (file: Blob[], updateProgress?: (progress: number) => void) => Promise<string>;
+export declare type IUploader = (file: Blob, metadata: any, updateProgress?: (progress: number) => void) => Promise<string>;
+export declare type IMultipleUploader = (file: Blob[], metadata: any, updateProgress?: (progress: number) => void) => Promise<string>;
 export declare type ILanguageHelper = (text: string) => string;
 export interface ILanguage {
     [index: string]: string | ILanguage | ILanguageHelper | any;

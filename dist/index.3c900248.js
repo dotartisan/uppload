@@ -543,8 +543,8 @@ const uppload = new _src.Uppload({
         256,
         256
     ],
-    uploader: (file, updateProgress)=>new Promise((resolve)=>{
-            console.log("Uploading file...", file);
+    uploader: (file, metadata, updateProgress)=>new Promise((resolve)=>{
+            console.log("Uploading file...", file, metadata);
             setTimeout(()=>resolve(window.URL.createObjectURL(file))
             , 2750);
             let progress = 0;
@@ -1167,7 +1167,8 @@ parcelHelpers.export(exports, "safeUpploadFileToFile", ()=>safeUpploadFileToFile
  * @param blob - Blob to convert to file
  * @param fileName - Name of the file
  * @param lastModified - Date modified
- */ const safeBlobToFile = (blob, fileName, lastModified)=>{
+ * @param metadata - file metadata
+ */ const safeBlobToFile = (blob, fileName, lastModified, metadata)=>{
     try {
         return new File([
             blob
@@ -1191,7 +1192,8 @@ const blobToUpploadFile = (blob, name, type, lastModified)=>{
 const safeUpploadFileToFile = (file)=>{
     const blob = file.blob;
     file.lastModified = file.lastModified || new Date();
-    return safeBlobToFile(blob, file.name, file.lastModified);
+    file.metadata = file.metadata || {};
+    return safeBlobToFile(blob, file.name, file.lastModified, file.metadata);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dIU7U":[function(require,module,exports) {
@@ -1567,7 +1569,6 @@ class GIPHY extends _search.SearchBaseClass {
             searchEndpoint: (apiKey, query)=>`https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=18&offset=0&rating=G&lang=en`
             ,
             metadata: (image)=>{
-                console.log(image);
                 const meta = {
                     caption: image.title,
                     alt: image.title,
@@ -5488,11 +5489,11 @@ class Uppload {
    * Uploads multiple files to the server
    * @param file
    * @returns JSON response from server
-   */ uploadMultiple(file) {
+   */ uploadMultiple(file, metadata) {
         this.emitter.emit("before-upload");
         return new Promise((resolve)=>{
             this.navigate("uploading");
-            if (this.uploader && typeof this.uploader === "function") this.uploader(file, this.updateProgress.bind(this)).then((response)=>{
+            if (this.uploader && typeof this.uploader === "function") this.uploader(file, metadata, this.updateProgress.bind(this)).then((response)=>{
                 this.navigate("default");
                 resolve(response);
                 this.emitter.emit("upload", response);
@@ -5556,7 +5557,7 @@ class Uppload {
             if (this.effects.length && file.type && file.type.indexOf("image/") === 0 && this.settings.skipEditMimes?.indexOf(file.type)) {
                 this.activeEffect = this.effects[0].name;
                 this.update();
-            } else return this.upload(_files.safeUpploadFileToFile(file));
+            } else return this.upload(_files.safeUpploadFileToFile(file), file.metadata);
         }
         // Set active state to current effect
         const activeRadio = this.container.querySelector(`input[name='uppload-effect-radio'][value='${this.activeEffect}']`);
@@ -5572,7 +5573,7 @@ class Uppload {
    * Upload a file to the server
    * @param file - A Blob object containing the file to upload
    * @returns The file URL
-   */ upload(file1) {
+   */ upload(file1, metadata) {
         this.emitter.emit("before-upload", file1);
         return new Promise((resolve, reject)=>{
             this.navigate("uploading");
@@ -5586,7 +5587,7 @@ class Uppload {
             }).then((blob)=>{
                 upploadFile.blob = blob;
                 return _files.safeUpploadFileToFile(upploadFile);
-            }).then((file)=>this.uploader(file, this.updateProgress.bind(this))
+            }).then((file)=>this.uploader(file, metadata, this.updateProgress.bind(this))
             ).then((url)=>{
                 this.bind(url);
                 this.navigate("default");
@@ -5705,7 +5706,7 @@ class Uppload {
             if (!this.file) return;
             this.activeService = "";
             this.activeEffect = "";
-            this.upload(_files.safeUpploadFileToFile(this.file));
+            this.upload(_files.safeUpploadFileToFile(this.file), this.file.metadata);
         });
     }
     /**

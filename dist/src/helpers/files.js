@@ -3,8 +3,9 @@
  * @param blob - Blob to convert to file
  * @param fileName - Name of the file
  * @param lastModified - Date modified
+ * @param metadata - file metadata
  */
-const safeBlobToFile = (blob, fileName, lastModified) => {
+const safeBlobToFile = (blob, fileName, lastModified, metadata) => {
     try {
         return new File([blob], fileName || "file_name", {
             lastModified: (lastModified || new Date()).getTime(),
@@ -27,6 +28,7 @@ export const blobToUpploadFile = (blob, name, type, lastModified) => {
 export const safeUpploadFileToFile = (file) => {
     const blob = file.blob;
     file.lastModified = file.lastModified || new Date();
-    return safeBlobToFile(blob, file.name, file.lastModified);
+    file.metadata = file.metadata || {};
+    return safeBlobToFile(blob, file.name, file.lastModified, file.metadata);
 };
 //# sourceMappingURL=files.js.map

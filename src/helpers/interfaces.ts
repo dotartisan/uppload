@@ -37,8 +37,8 @@ export interface IUpploadSettings {
 }
 
 export interface IHandlersParams {
-  upload: (file: Blob) => Promise<string>;
-  uploadMultiple: (file: Blob[]) => Promise<string>;
+  upload: (file: Blob, metadata: any) => Promise<string>;
+  uploadMultiple: (file: Blob[], metadata: any) => Promise<string>;
   next: (file: IUpploadFile) => void;
   showHelp: (url: string) => void;
   handle: (error: any) => void;
@@ -57,11 +57,13 @@ export interface IServiceTemplateParams {
 
 export type IUploader = (
   file: Blob,
-  updateProgress?: (progress: number) => void
+  metadata: any,
+  updateProgress?: (progress: number) => void,
 ) => Promise<string>;
 
 export type IMultipleUploader = (
   file: Blob[],
+  metadata: any,
   updateProgress?: (progress: number) => void
 ) => Promise<string>;
 

@@ -32,7 +32,6 @@ export default class GIPHY extends SearchBaseClass<GIPHYResult> {
           query
         )}&limit=18&offset=0&rating=G&lang=en`,
       metadata: (image: GIPHYResult) => {
-        console.log(image)
         const meta = {
           caption: image.title,
           alt: image.title,

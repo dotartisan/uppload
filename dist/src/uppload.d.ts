@@ -127,7 +127,7 @@ export declare class Uppload implements IUppload {
      * @param file - A Blob object containing the file to upload
      * @returns The file URL
      */
-    upload(file: File | Blob): Promise<string>;
+    upload(file: File | Blob, metadata: any): Promise<string>;
     /**
      * Gracefully display an error message
      * @param error - Error to display

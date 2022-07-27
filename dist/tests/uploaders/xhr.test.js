@@ -21,7 +21,7 @@ describe("xhr uploader", () => {
             console.log("ANAND GOT", url);
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses xhr response key", () => {
         xhr.post("https://example.com", (req, res) => res.body(JSON.stringify({
@@ -36,7 +36,7 @@ describe("xhr uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses xhr response function", () => {
         xhr.post("https://example.com", (req, res) => res.body(JSON.stringify({
@@ -51,7 +51,7 @@ describe("xhr uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses xhr settings function", () => {
         xhr.post("https://example.com", (req, res) => res.body(JSON.stringify({
@@ -66,7 +66,7 @@ describe("xhr uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
 });
 describe("fetch uploader", () => {
@@ -85,7 +85,7 @@ describe("fetch uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses fetch response key", () => {
         fetch.mockResponseOnce(JSON.stringify({
@@ -100,7 +100,7 @@ describe("fetch uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses fetch response function", () => {
         fetch.mockResponseOnce(JSON.stringify({
@@ -115,7 +115,7 @@ describe("fetch uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
     it("uses fetch settings function", () => {
         fetch.mockResponseOnce(JSON.stringify({
@@ -133,7 +133,7 @@ describe("fetch uploader", () => {
         uppload.on("upload", (url) => {
             expect(url).toBe("https://example.com/file.jpg");
         });
-        uppload.upload(new Blob());
+        uppload.upload(new Blob(), {});
     });
 });
 //# sourceMappingURL=xhr.test.js.map

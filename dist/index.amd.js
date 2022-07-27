@@ -274,8 +274,9 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
      * @param blob - Blob to convert to file
      * @param fileName - Name of the file
      * @param lastModified - Date modified
+     * @param metadata - file metadata
      */
-    const safeBlobToFile = (blob, fileName, lastModified) => {
+    const safeBlobToFile = (blob, fileName, lastModified, metadata) => {
         try {
             return new File([blob], fileName || "file_name", {
                 lastModified: (lastModified || new Date()).getTime(),
@@ -298,7 +299,8 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
     const safeUpploadFileToFile = (file) => {
         const blob = file.blob;
         file.lastModified = file.lastModified || new Date();
-        return safeBlobToFile(blob, file.name, file.lastModified);
+        file.metadata = file.metadata || {};
+        return safeBlobToFile(blob, file.name, file.lastModified, file.metadata);
     };
 
     class DefaultService extends UpploadService {
@@ -754,12 +756,12 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
          * @param file
          * @returns JSON response from server
          */
-        uploadMultiple(file) {
+        uploadMultiple(file, metadata) {
             this.emitter.emit("before-upload");
             return new Promise((resolve) => {
                 this.navigate("uploading");
                 if (this.uploader && typeof this.uploader === "function") {
-                    this.uploader(file, this.updateProgress.bind(this))
+                    this.uploader(file, metadata, this.updateProgress.bind(this))
                         .then((response) => {
                         this.navigate("default");
                         resolve(response);
@@ -840,7 +842,7 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
                     this.update();
                 }
                 else {
-                    return this.upload(safeUpploadFileToFile(file));
+                    return this.upload(safeUpploadFileToFile(file), file.metadata);
                 }
             }
             // Set active state to current effect
@@ -861,7 +863,7 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
          * @param file - A Blob object containing the file to upload
          * @returns The file URL
          */
-        upload(file) {
+        upload(file, metadata) {
             this.emitter.emit("before-upload", file);
             return new Promise((resolve, reject) => {
                 this.navigate("uploading");
@@ -882,7 +884,7 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
                         upploadFile.blob = blob;
                         return safeUpploadFileToFile(upploadFile);
                     })
-                        .then((file) => this.uploader(file, this.updateProgress.bind(this)))
+                        .then((file) => this.uploader(file, metadata, this.updateProgress.bind(this)))
                         .then((url) => {
                         this.bind(url);
                         this.navigate("default");
@@ -1022,7 +1024,7 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
                         return;
                     this.activeService = "";
                     this.activeEffect = "";
-                    this.upload(safeUpploadFileToFile(this.file));
+                    this.upload(safeUpploadFileToFile(this.file), this.file.metadata);
                 });
         }
         /**
@@ -3786,7 +3788,7 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
             let file = null;
             if (files) {
                 if (params.uppload.settings.multiple && files.length > 1)
-                    return params.uploadMultiple(Array.from(files));
+                    return params.uploadMultiple(Array.from(files), {});
                 for (let i = 0; i < files.length; i++) {
                     const item = files[i];
                     if (this.mimeTypes.indexOf(item.type) !== -1)
@@ -3982,7 +3984,6 @@ define(['exports', 'focus-trap', 'mitt', 'cropperjs'], (function (exports, focus
                 searchEndpoint: (apiKey, query) => `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=18&offset=0&rating=G&lang=en`,
                 metadata: (image) => {
                     var _a, _b;
-                    console.log(image);
                     const meta = {
                         caption: image.title,
                         alt: image.title,

@@ -47,9 +47,9 @@ const uppload = new Uppload({
   call: ".try-uppload",
   lang: en,
   maxSize: [256, 256],
-  uploader: (file, updateProgress) =>
+  uploader: (file, metadata, updateProgress) =>
     new Promise((resolve) => {
-      console.log("Uploading file...", file);
+      console.log("Uploading file...", file, metadata);
       setTimeout(() => resolve(window.URL.createObjectURL(file)), 2750);
       let progress = 0;
       const interval = setInterval(() => {

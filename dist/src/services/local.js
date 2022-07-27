@@ -47,7 +47,7 @@ export default class Local extends UpploadService {
         let file = null;
         if (files) {
             if (params.uppload.settings.multiple && files.length > 1)
-                return params.uploadMultiple(Array.from(files));
+                return params.uploadMultiple(Array.from(files), {});
             for (let i = 0; i < files.length; i++) {
                 const item = files[i];
                 if (this.mimeTypes.indexOf(item.type) !== -1)

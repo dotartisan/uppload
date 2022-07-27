@@ -514,13 +514,14 @@ export class Uppload implements IUppload {
    * @param file
    * @returns JSON response from server
    */
-  private uploadMultiple(file: Blob[]): Promise<any> {
+  private uploadMultiple(file: Blob[], metadata: any): Promise<any> {
     this.emitter.emit("before-upload");
     return new Promise((resolve) => {
       this.navigate("uploading");
       if (this.uploader && typeof this.uploader === "function") {
         (this.uploader as IMultipleUploader)(
           file,
+          metadata,
           this.updateProgress.bind(this)
         )
           .then((response: any) => {
@@ -601,7 +602,7 @@ export class Uppload implements IUppload {
         this.activeEffect = this.effects[0].name;
         this.update();
       } else {
-        return this.upload(safeUpploadFileToFile(file));
+        return this.upload(safeUpploadFileToFile(file), file.metadata);
       }
     }
     // Set active state to current effect
@@ -627,7 +628,7 @@ export class Uppload implements IUppload {
    * @param file - A Blob object containing the file to upload
    * @returns The file URL
    */
-  upload(file: File | Blob): Promise<string> {
+  upload(file: File | Blob, metadata: any): Promise<string> {
     this.emitter.emit("before-upload", file);
     return new Promise((resolve, reject) => {
       this.navigate("uploading");
@@ -651,7 +652,7 @@ export class Uppload implements IUppload {
             upploadFile.blob = blob;
             return safeUpploadFileToFile(upploadFile);
           })
-          .then((file) => (this.uploader as IUploader)(file, this.updateProgress.bind(this)))
+          .then((file) => (this.uploader as IUploader)(file, metadata, this.updateProgress.bind(this)))
           .then((url: string) => {
             this.bind(url);
             this.navigate("default");
@@ -808,7 +809,7 @@ export class Uppload implements IUppload {
         if (!this.file) return;
         this.activeService = "";
         this.activeEffect = "";
-        this.upload(safeUpploadFileToFile(this.file));
+        this.upload(safeUpploadFileToFile(this.file), this.file.metadata);
       });
   }
 

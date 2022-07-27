@@ -12,7 +12,6 @@ export default class GIPHY extends SearchBaseClass {
             searchEndpoint: (apiKey, query) => `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=18&offset=0&rating=G&lang=en`,
             metadata: (image) => {
                 var _a, _b;
-                console.log(image);
                 const meta = {
                     caption: image.title,
                     alt: image.title,

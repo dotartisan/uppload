@@ -30,7 +30,7 @@ describe("xhr uploader", () => {
       console.log("ANAND GOT", url);
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses xhr response key", () => {
@@ -50,7 +50,7 @@ describe("xhr uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses xhr response function", () => {
@@ -70,7 +70,7 @@ describe("xhr uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses xhr settings function", () => {
@@ -90,7 +90,7 @@ describe("xhr uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 });
 
@@ -116,7 +116,7 @@ describe("fetch uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses fetch response key", () => {
@@ -134,7 +134,7 @@ describe("fetch uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses fetch response function", () => {
@@ -152,7 +152,7 @@ describe("fetch uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 
   it("uses fetch settings function", () => {
@@ -173,6 +173,6 @@ describe("fetch uploader", () => {
     uppload.on("upload", (url: string) => {
       expect(url).toBe("https://example.com/file.jpg");
     });
-    uppload.upload(new Blob());
+    uppload.upload(new Blob(), {});
   });
 });
