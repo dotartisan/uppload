@@ -1422,7 +1422,7 @@ class Local extends _service.UpploadService {
         const files = event.target.files;
         let file = null;
         if (files) {
-            if (params.uppload.settings.multiple && files.length > 1) return params.uploadMultiple(Array.from(files));
+            if (params.uppload.settings.multiple && files.length > 1) return params.uploadMultiple(Array.from(files), {});
             for(let i = 0; i < files.length; i++){
                 const item = files[i];
                 if (this.mimeTypes.indexOf(item.type) !== -1) {
@@ -5192,9 +5192,10 @@ class Uppload {
    */ bind(value) {
         if (this.settings.bind) {
             const elements = _elements.getElements(this.settings.bind);
+            const source = value?.source || value;
             elements.forEach((element)=>{
-                if (element.nodeName === "IMG") element.setAttribute("src", value);
-                else element.setAttribute("value", value);
+                if (element.nodeName === "IMG") element.setAttribute("src", source);
+                else element.setAttribute("value", source);
             });
             this.emitter.emit("bind");
         }

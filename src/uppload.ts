@@ -118,14 +118,15 @@ export class Uppload implements IUppload {
    * Bind the image URL value to DOM elements
    * @param value - URL of the image
    */
-  private bind(value: string) {
+  private bind(value: any) {
     if (this.settings.bind) {
       const elements = getElements(this.settings.bind);
+      const source = value?.source || value
       elements.forEach((element) => {
         if (element.nodeName === "IMG") {
-          element.setAttribute("src", value);
+          element.setAttribute("src", source);
         } else {
-          element.setAttribute("value", value);
+          element.setAttribute("value", source);
         }
       });
       this.emitter.emit("bind");

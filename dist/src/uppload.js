@@ -107,12 +107,13 @@ export class Uppload {
     bind(value) {
         if (this.settings.bind) {
             const elements = getElements(this.settings.bind);
+            const source = (value === null || value === void 0 ? void 0 : value.source) || value;
             elements.forEach((element) => {
                 if (element.nodeName === "IMG") {
-                    element.setAttribute("src", value);
+                    element.setAttribute("src", source);
                 }
                 else {
-                    element.setAttribute("value", value);
+                    element.setAttribute("value", source);
                 }
             });
             this.emitter.emit("bind");
